@@ -8,9 +8,9 @@ import {
   getProductById,
   updateProduct,
   deleteProduct,
-} from "./controllers/product.controller";
-import { validate } from "./middlewares/validate";
-import { productSchema, updateProductSchema } from "./validations/product";
+} from "./controllers/product.controller.js";
+import { validate } from "./middlewares/validate.js";
+import { productSchema, updateProductSchema } from "./validations/product.js";
 
 dotenv.config();
 
