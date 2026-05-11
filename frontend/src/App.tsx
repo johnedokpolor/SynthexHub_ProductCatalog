@@ -53,11 +53,8 @@ const App = () => {
         {/* Header Section */}
         <header className="mb-12">
           <h1 className="text-4xl font-extrabold tracking-tight mb-4 text-slate-900">
-            Vybe<span className="text-indigo-600">Catalog</span>
+            Product<span className="text-indigo-600">Catalog</span>
           </h1>
-          <p className="text-slate-500 mb-8">
-            Internship Project 2: Advanced Search & Aggregation
-          </p>
 
           {/* Search and Filter Bar */}
           <div className="flex flex-col md:flex-row gap-4 p-4 bg-white rounded-2xl shadow-sm border border-slate-200">
