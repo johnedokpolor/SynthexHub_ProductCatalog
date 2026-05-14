@@ -22,6 +22,7 @@ const App = () => {
       // Adjust the URL to match your Express server port (usually 5000)
       const baseUrl =
         "https://synthexhub-productcatalog.onrender.com/api/products";
+      // "http://localhost:1000/api/products";
       const params = new URLSearchParams({
         search: debouncedTerm,
         category: category,
@@ -41,16 +42,10 @@ const App = () => {
     }
   };
   // This only runs when the user STOPS typing
-  useEffect(() => {
-    if (debouncedTerm) {
-      fetchProducts();
-    }
-  }, [debouncedTerm]);
 
   useEffect(() => {
     fetchProducts();
   }, [debouncedTerm, category, page]);
-  console.log(page);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
@@ -151,10 +146,10 @@ const App = () => {
                 [...Array(pagination.pages)].map((_, i) => (
                   <div
                     key={i}
-                    className={`px-3 py-1 mt-20 border rounded-sm  ${page === i ? "bg-black text-white" : "bg-slate-100"} ${i === 0 && "hidden"} `}
-                    onClick={() => setPage(i)}
+                    className={`px-3 py-1 mt-20 border rounded-sm  ${page === i + 1 ? "bg-black text-white" : "bg-slate-100"} `}
+                    onClick={() => setPage(i + 1)}
                   >
-                    {i}
+                    {i + 1}
                   </div>
                 ))}
             </div>
