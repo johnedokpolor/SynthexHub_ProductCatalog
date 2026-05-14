@@ -8,6 +8,7 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [page, setPage] = useState(1);
+  const [pagination, setPagination] = useState<{ pages?: number } | null>(null);
 
   // This is the "Easy" debounce logic
   useEffect(() => {
@@ -19,17 +20,20 @@ const App = () => {
     setLoading(true);
     try {
       // Adjust the URL to match your Express server port (usually 5000)
-      const baseUrl = "http://localhost:5000/api/products";
+      const baseUrl =
+        "https://synthexhub-productcatalog.onrender.com/api/products";
       const params = new URLSearchParams({
         search: debouncedTerm,
         category: category,
-        limit: "12",
+        limit: "10",
         page: String(page),
       });
 
       const res = await fetch(`${baseUrl}?${params}`);
       const result = await res.json();
       setProducts(result.data || []);
+      setPagination(result.pagination);
+      console.log(result);
     } catch (error) {
       console.error("Fetch error:", error);
     } finally {
@@ -46,6 +50,7 @@ const App = () => {
   useEffect(() => {
     fetchProducts();
   }, [debouncedTerm, category, page]);
+  console.log(page);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans">
@@ -78,7 +83,6 @@ const App = () => {
             </select>
           </div>
         </header>
-
         {/* Product Grid */}
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -90,59 +94,72 @@ const App = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
-            {products.map((product: any) => (
-              <div
-                key={product._id}
-                className="group bg-white rounded-2xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300"
-              >
-                <div className="aspect-square bg-slate-100 rounded-xl mb-5 flex items-center justify-center text-slate-300 font-medium group-hover:bg-indigo-50 transition-colors">
-                  {/* Placeholder for Task 3 Images */}
-                  <span className="group-hover:scale-110 transition-transform duration-300">
-                    No Image
-                  </span>
-                </div>
-
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <span className="inline-block px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest">
-                      {product.category}
-                    </span>
-                    <span className="text-xl font-black text-slate-900">
-                      ${product.price}
+          <>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+              {products.map((product: any) => (
+                <div
+                  key={product._id}
+                  className="group bg-white rounded-2xl border border-slate-200 p-5 hover:border-indigo-300 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300"
+                >
+                  <div className="aspect-square bg-slate-100 rounded-xl mb-5 flex items-center justify-center text-slate-300 font-medium group-hover:bg-indigo-50 transition-colors">
+                    {/* Placeholder for Task 3 Images */}
+                    <span className="group-hover:scale-110 transition-transform duration-300">
+                      No Image
                     </span>
                   </div>
 
-                  <h3 className="text-lg font-bold leading-tight group-hover:text-indigo-600 transition-colors">
-                    {product.name}
-                  </h3>
+                  <div className="space-y-3">
+                    <div className="flex justify-between items-start">
+                      <span className="inline-block px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold uppercase tracking-widest">
+                        {product.category}
+                      </span>
+                      <span className="text-xl font-black text-slate-900">
+                        ${product.price}
+                      </span>
+                    </div>
 
-                  <p className="text-slate-500 text-sm line-clamp-2">
-                    {product.description ||
-                      "No description provided for this item."}
-                  </p>
+                    <h3 className="text-lg font-bold leading-tight group-hover:text-indigo-600 transition-colors">
+                      {product.name}
+                    </h3>
 
-                  <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
-                    <span
-                      className={`flex items-center gap-1.5 text-xs font-semibold ${product.stock > 0 ? "text-emerald-600" : "text-rose-500"}`}
-                    >
+                    <p className="text-slate-500 text-sm line-clamp-2">
+                      {product.description ||
+                        "No description provided for this item."}
+                    </p>
+
+                    <div className="pt-4 border-t border-slate-50 flex items-center justify-between">
                       <span
-                        className={`w-1.5 h-1.5 rounded-full ${product.stock > 0 ? "bg-emerald-500" : "bg-rose-500"}`}
-                      ></span>
-                      {product.stock > 0
-                        ? `${product.stock} Units`
-                        : "Out of Stock"}
-                    </span>
-                    <button className="text-indigo-600 font-bold text-sm hover:underline">
-                      Details
-                    </button>
+                        className={`flex items-center gap-1.5 text-xs font-semibold ${product.stock > 0 ? "text-emerald-600" : "text-rose-500"}`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${product.stock > 0 ? "bg-emerald-500" : "bg-rose-500"}`}
+                        ></span>
+                        {product.stock > 0
+                          ? `${product.stock} Units`
+                          : "Out of Stock"}
+                      </span>
+                      <button className="text-indigo-600 font-bold text-sm hover:underline">
+                        Details
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+            <div className="flex justify-center gap-1">
+              {pagination &&
+                [...Array(pagination.pages)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`px-3 py-1 mt-20 border rounded-sm  ${page === i ? "bg-black text-white" : "bg-slate-100"} ${i === 0 && "hidden"} `}
+                    onClick={() => setPage(i)}
+                  >
+                    {i}
+                  </div>
+                ))}
+            </div>
+          </>
         )}
-
         {/* Empty State */}
         {!loading && products.length === 0 && (
           <div className="text-center py-32">
